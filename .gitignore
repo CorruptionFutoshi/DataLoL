@@ -1,0 +1,22 @@
+# API キー・秘密情報
+config/settings.yaml
+
+# 収集データ（サイズが大きいため）
+data/raw/
+data/processed/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/*.nbconvert.*
+
+# IDE
+.vscode/
+*.swp
+*.swo

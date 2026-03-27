@@ -1,0 +1,335 @@
+# チャンピオン分類 (Champion Class Taxonomy)
+#
+# 出典: https://www.loljp-wiki.jp/wiki/?データベース/チャンピオン/種類別/新分類
+# ビルドや形態によって複数サブクラスに該当するチャンピオンは配列で列挙。
+# 配列の先頭がそのチャンピオンの代表的なサブクラス。
+# championName は Riot API の内部名 (player_stats.csv の championName と一致)。
+#
+# 最終更新: 2026-03-26
+
+# ═══════════════════════════════════════════════════════════════
+#  サブクラス → クラス 逆引き (スクリプト用)
+# ═══════════════════════════════════════════════════════════════
+
+subclass_to_class:
+  Warden:     Tank
+  Vanguard:   Tank
+  Juggernaut: Bruiser
+  Diver:      Bruiser
+  Skirmisher: Slayer
+  Assassin:   Slayer
+  Marksman:   Marksman
+  Battlemage: Mage
+  Burstmage:  Mage
+  Artillery:  Mage
+  Enchanter:  Controller
+  Catcher:    Controller
+  Specialist: Specialist
+
+# ═══════════════════════════════════════════════════════════════
+#  分類定義
+# ═══════════════════════════════════════════════════════════════
+
+class_definitions:
+
+  Tank:
+    ja: タンク
+    description: 耐久力が高く、敵の攻撃を受けつつ敵の妨害をする近接チャンピオン
+    subclasses:
+      Warden:
+        ja: ワーデン
+        description: 防御的なタンク。敵の脅威から味方を守ることが得意
+      Vanguard:
+        ja: ヴァンガード
+        description: 攻撃的なタンク。敵陣に飛び込んで強力なCCを与えエンゲージするのが得意
+
+  Bruiser:
+    ja: ブルーザー
+    description: 火力と耐久力を両立し、ダメージを受けながらも敵を倒す近接チャンピオン
+    subclasses:
+      Juggernaut:
+        ja: ジャガーノート
+        description: タンク寄りのファイター。火力も耐久力も高い代わりに機動力が低く敵への接近に難がある
+      Diver:
+        ja: ダイバー
+        description: スレイヤー寄りのファイター。敵に接近してある程度耐えながらキャリーを倒し切るのに十分な機動力耐久力火力が揃っているが、そこからタンクしきるほどの耐久力や再び離脱するほどの機動力は無いことが多い
+
+  Slayer:
+    ja: スレイヤー
+    description: 火力と機動力を高く両立する近接チャンピオン
+    subclasses:
+      Skirmisher:
+        ja: スカーミッシャー
+        description: 高いDPS火力と機動力を持つスレイヤー。自衛スキルや回復を上手く使うことで前線で立ち回る
+      Assassin:
+        ja: アサシン
+        description: 非常に高いバースト火力と機動力を持つスレイヤー。機動力やステルスで敵のキャリーに接近してバーストで倒し離脱する
+
+  Marksman:
+    ja: マークスマン
+    description: 通常攻撃で高いDPS火力を出す遠隔チャンピオン
+    subclasses: null
+
+  Mage:
+    ja: メイジ
+    description: 魔法使い。スキルを使ってダメージを与えるチャンピオン。基本的に遠隔でAP
+    subclasses:
+      Battlemage:
+        ja: バトルメイジ
+        description: 高いDPSを出す保証として回復や確定CC等の自衛力かペットやAoE等の間接的な攻撃手段を持つメイジ
+      Burstmage:
+        ja: バーストメイジ
+        description: 強烈なCCから高いバースト火力で単体を倒すのが得意なメイジ
+      Artillery:
+        ja: アーティラリー
+        description: 非常に射程の長い攻撃スキルを持ち、一方的なポークが得意
+
+  Controller:
+    ja: コントローラー
+    description: 仲間が戦いやすいよう補助を行うチャンピオン
+    subclasses:
+      Enchanter:
+        ja: エンチャンター
+        description: 味方に対して回復やシールドなどのバフを与えることで援護するコントローラー
+      Catcher:
+        ja: キャッチャー
+        description: 射程の長いCCを持ち、立ち位置を誤った敵を捕まえるのが得意なコントローラー
+
+  Specialist:
+    ja: スペシャリスト
+    description: 上記の分類では説明しきれない性質を持つ、あるいは議論の結論が出ていないチャンピオンに与えられるタグ
+    subclasses: null
+
+# ═══════════════════════════════════════════════════════════════
+#  チャンピオン → サブクラス マッピング
+#
+#  配列の先頭が代表サブクラス。
+#  ビルドや形態で複数に該当する場合は複数記載。
+#  (例: Kayn → [Skirmisher, Assassin] = 赤カイン/青カイン)
+# ═══════════════════════════════════════════════════════════════
+
+champions:
+
+  # ── A ──────────────────────────────────────────────────────
+  Aatrox:       [Juggernaut]
+  Ahri:         [Burstmage]
+  Akali:        [Assassin]
+  Akshan:       [Assassin, Marksman]
+  Alistar:      [Warden, Vanguard]
+  Ambessa:      [Diver, Skirmisher]
+  Amumu:        [Vanguard]
+  Anivia:       [Battlemage]
+  Annie:        [Burstmage]
+  Aphelios:     [Marksman]
+  Ashe:         [Marksman, Catcher]
+  AurelionSol:  [Battlemage]
+  Aurora:       [Assassin, Burstmage]
+  Azir:         [Battlemage, Specialist]
+
+  # ── B ──────────────────────────────────────────────────────
+  Bard:         [Catcher]
+  Belveth:      [Skirmisher]
+  Blitzcrank:   [Catcher]
+  Brand:        [Burstmage]
+  Braum:        [Warden]
+  Briar:        [Diver]
+
+  # ── C ──────────────────────────────────────────────────────
+  Caitlyn:      [Marksman]
+  Camille:      [Diver]
+  Cassiopeia:   [Battlemage]
+  Chogath:      [Juggernaut, Burstmage, Specialist]   # タンクビルド / APビルド
+  Corki:        [Marksman]
+
+  # ── D ──────────────────────────────────────────────────────
+  Darius:       [Juggernaut]
+  Diana:        [Diver, Assassin]
+  DrMundo:      [Juggernaut]
+  Draven:       [Marksman]
+
+  # ── E ──────────────────────────────────────────────────────
+  Ekko:         [Assassin]
+  Elise:        [Diver, Burstmage, Specialist]         # 蜘蛛形態 / ヒト形態
+  Evelynn:      [Assassin]
+  Ezreal:       [Marksman]
+
+  # ── F ──────────────────────────────────────────────────────
+  FiddleSticks: [Battlemage, Specialist]
+  Fiora:        [Skirmisher]
+  Fizz:         [Assassin]
+
+  # ── G ──────────────────────────────────────────────────────
+  Galio:        [Warden, Burstmage]
+  Gangplank:    [Battlemage, Specialist]
+  Garen:        [Juggernaut]
+  Gnar:         [Diver, Marksman, Specialist]           # メガ / ミニ
+  Gragas:       [Vanguard, Burstmage]                   # タンクビルド / APビルド
+  Graves:       [Skirmisher, Marksman, Specialist]
+  Gwen:         [Skirmisher]
+
+  # ── H ──────────────────────────────────────────────────────
+  Hecarim:      [Diver]
+  Heimerdinger: [Battlemage, Specialist]
+  Hwei:         [Artillery]
+
+  # ── I ──────────────────────────────────────────────────────
+  Illaoi:       [Juggernaut]
+  Irelia:       [Diver, Skirmisher]
+  Ivern:        [Enchanter, Catcher]
+
+  # ── J ──────────────────────────────────────────────────────
+  Janna:        [Enchanter]
+  JarvanIV:     [Diver]
+  Jax:          [Skirmisher]
+  Jayce:        [Diver, Artillery]                      # ハンマー / キャノン
+  Jhin:         [Marksman, Catcher]
+  Jinx:         [Marksman]
+
+  # ── K ──────────────────────────────────────────────────────
+  KSante:       [Warden, Skirmisher]                    # 通常 / オールアウト形態
+  Kaisa:        [Marksman]
+  Kalista:      [Marksman]
+  Karma:        [Burstmage, Enchanter]
+  Karthus:      [Battlemage]
+  Kassadin:     [Assassin]
+  Katarina:     [Assassin]
+  Kayle:        [Marksman, Specialist]                  # Lv6以降
+  Kayn:         [Skirmisher, Assassin]                  # 赤カイン / 青カイン
+  Kennen:       [Battlemage, Specialist]
+  Khazix:       [Assassin]
+  Kindred:      [Marksman]
+  Kled:         [Diver, Skirmisher]
+  KogMaw:       [Marksman]
+
+  # ── L ──────────────────────────────────────────────────────
+  Leblanc:      [Assassin, Burstmage]
+  LeeSin:       [Diver]
+  Leona:        [Vanguard]
+  Lillia:       [Skirmisher]
+  Lissandra:    [Burstmage]
+  Lucian:       [Marksman]
+  Lulu:         [Enchanter]
+  Lux:          [Burstmage, Artillery]
+
+  # ── M ──────────────────────────────────────────────────────
+  Malphite:     [Vanguard]
+  Malzahar:     [Battlemage]
+  Maokai:       [Warden, Vanguard]
+  MasterYi:     [Skirmisher]
+  Mel:          [Burstmage, Artillery]
+  Milio:        [Enchanter]
+  MissFortune:  [Marksman]
+  MonkeyKing:   [Diver]
+  Mordekaiser:  [Juggernaut]
+  Morgana:      [Burstmage, Catcher]
+
+  # ── N ──────────────────────────────────────────────────────
+  Naafiri:      [Assassin]
+  Nami:         [Enchanter]
+  Nasus:        [Juggernaut]
+  Nautilus:     [Vanguard, Catcher]
+  Neeko:        [Burstmage, Catcher]
+  Nidalee:      [Assassin, Artillery, Specialist]       # クーガー / ヒト
+  Nilah:        [Skirmisher]
+  Nocturne:     [Diver, Assassin]
+  Nunu:         [Vanguard]
+
+  # ── O ──────────────────────────────────────────────────────
+  Olaf:         [Diver]
+  Orianna:      [Burstmage]
+  Ornn:         [Vanguard]
+
+  # ── P ──────────────────────────────────────────────────────
+  Pantheon:     [Diver]
+  Poppy:        [Warden]
+  Pyke:         [Assassin, Catcher]
+
+  # ── Q ──────────────────────────────────────────────────────
+  Qiyana:       [Assassin]
+  Quinn:        [Marksman, Specialist]
+
+  # ── R ──────────────────────────────────────────────────────
+  Rakan:        [Catcher]
+  Rammus:       [Vanguard]
+  RekSai:       [Diver]
+  Rell:         [Vanguard]
+  Renata:       [Enchanter]
+  Renekton:     [Diver]
+  Rengar:       [Diver, Assassin]
+  Riven:        [Skirmisher]
+  Rumble:       [Battlemage]
+  Ryze:         [Battlemage]
+
+  # ── S ──────────────────────────────────────────────────────
+  Samira:       [Marksman]
+  Sejuani:      [Vanguard]
+  Senna:        [Marksman, Enchanter]
+  Seraphine:    [Burstmage, Enchanter]
+  Sett:         [Juggernaut]
+  Shaco:        [Assassin]
+  Shen:         [Warden]
+  Shyvana:      [Juggernaut, Artillery]                 # ファイタービルド / APビルド
+  Singed:       [Juggernaut, Battlemage, Specialist]
+  Sion:         [Vanguard]
+  Sivir:        [Marksman]
+  Skarner:      [Vanguard, Juggernaut]
+  Smolder:      [Marksman]
+  Sona:         [Enchanter]
+  Soraka:       [Enchanter]
+  Swain:        [Battlemage]
+  Sylas:        [Skirmisher, Burstmage]
+  Syndra:       [Burstmage]
+
+  # ── T ──────────────────────────────────────────────────────
+  TahmKench:    [Warden]
+  Taliyah:      [Battlemage, Burstmage]
+  Talon:        [Assassin]
+  Taric:        [Warden, Enchanter]
+  Teemo:        [Battlemage, Specialist]
+  Thresh:       [Catcher]
+  Tristana:     [Marksman]
+  Trundle:      [Juggernaut]
+  Tryndamere:   [Skirmisher]
+  TwistedFate:  [Burstmage]
+  Twitch:       [Marksman]
+
+  # ── U ──────────────────────────────────────────────────────
+  Udyr:         [Juggernaut]
+  Urgot:        [Juggernaut]
+
+  # ── V ──────────────────────────────────────────────────────
+  Varus:        [Marksman, Artillery]
+  Vayne:        [Marksman]
+  Veigar:       [Burstmage]
+  Velkoz:       [Artillery]
+  Vex:          [Burstmage]
+  Vi:           [Diver]
+  Viego:        [Skirmisher]
+  Viktor:       [Battlemage]
+  Vladimir:     [Battlemage]
+  Volibear:     [Juggernaut]
+
+  # ── W ──────────────────────────────────────────────────────
+  Warwick:      [Diver]
+
+  # ── X ──────────────────────────────────────────────────────
+  Xayah:        [Marksman]
+  Xerath:       [Artillery]
+  XinZhao:      [Diver]
+
+  # ── Y ──────────────────────────────────────────────────────
+  Yasuo:        [Skirmisher]
+  Yone:         [Skirmisher]
+  Yorick:       [Juggernaut]
+  Yunara:       [Marksman]
+  Yuumi:        [Enchanter]
+
+  # ── Z ──────────────────────────────────────────────────────
+  Zaahen:       [Skirmisher]
+  Zac:          [Vanguard]
+  Zed:          [Assassin]
+  Zeri:         [Marksman]
+  Ziggs:        [Artillery]
+  Zilean:       [Enchanter, Specialist]
+  Zoe:          [Burstmage]
+  Zyra:         [Battlemage, Catcher]

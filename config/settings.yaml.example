@@ -1,0 +1,22 @@
+# Riot Games API 設定
+# このファイルを settings.yaml にコピーして、APIキーとメンバーを設定してください。
+# cp config/settings.yaml.example config/settings.yaml
+riot_api:
+  api_key: "RGAPI-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  region: "jp1"
+  routing: "asia"
+
+# フレックスランクの Queue ID
+queue_id: 440
+
+# 分析対象メンバー (Riot ID: gameName#tagLine)
+members:
+  - game_name: "YourName"
+    tag_line: "JP1"
+  # メンバーを追加する場合はここに追記
+
+# データ取得設定
+collection:
+  match_count: 100
+  rate_limit_sleep: 1.5
+  max_retries: 3

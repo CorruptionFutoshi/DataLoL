@@ -120,7 +120,7 @@ def main():
     members = config.get("members", [])
     col_cfg = config.get("collection", {})
 
-    start_date_str = col_cfg.get("start_date", "2024-01-01")
+    start_date_str = col_cfg.get("start_date", "2025-01-01")
     config_start_epoch = _parse_start_date(start_date_str)
     logger.info("Collection start date: %s", start_date_str)
 

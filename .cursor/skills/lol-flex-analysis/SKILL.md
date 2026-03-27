@@ -243,7 +243,7 @@ df = pd.read_csv('D:\\データLoL\\data\\processed\\player_stats.csv')
 
 ## Data Pipeline
 
-Collection is time-based: all Flex games since `start_date` in `settings.yaml` (default 2024-01-01) are fetched, with automatic pagination. Subsequent runs only fetch new games since the last collection.
+Collection is time-based: all Flex games since `start_date` in `settings.yaml` (default 2025-01-01) are fetched, with automatic pagination. Subsequent runs only fetch new games since the last collection.
 
 If the user needs fresh data:
 

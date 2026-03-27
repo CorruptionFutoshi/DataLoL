@@ -17,6 +17,7 @@ members:
 
 # データ取得設定
 collection:
+  start_date: "2025-01-01"   # この日付以降のフレックス試合を取得する
   match_count: 100
   rate_limit_sleep: 1.5
   max_retries: 3

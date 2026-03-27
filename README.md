@@ -101,6 +101,38 @@ python src/process.py
 - 全件取り直したい場合: `python src/collect.py --full`
 - 取得した生データは `data/raw/` に JSON で永久保存されます
 
+### ベンチマークデータの収集（任意）
+
+一部のスクリプトは、エメラルド〜ダイヤ帯の平均的なプレイヤーとの比較（ベンチマーク）機能を持っています。
+この比較を使うには、ベンチマークデータを別途収集する必要があります。
+
+```bash
+python src/collect_benchmark.py          # エメラルド+ダイヤ帯のプレイヤー 80人分を取得
+python src/process.py                    # ベンチマーク CSV も同時に生成される
+```
+
+| オプション | 説明 | 実行例 |
+|---|---|---|
+| `--players N` | サンプル人数を変更（デフォルト: 80） | `python src/collect_benchmark.py --players 120` |
+| `--tier` | 対象ティアを変更 | `python src/collect_benchmark.py --tier EMERALD DIAMOND PLATINUM` |
+
+- 2 回目以降は差分取得（収集済みのプレイヤー・試合はスキップ）
+- ベンチマークデータは `data/raw/benchmark/` に保存され、`process.py` が `benchmark_stats.csv` と `benchmark_timeline_frames.csv` を生成します
+
+**ベンチマークデータが必要なスクリプト：**
+
+| スクリプト | 内容 |
+|---|---|
+| `benchmark_comparison.py` | エメラルド帯ベンチマーク比較 |
+| `champion_benchmark.py` | チャンピオン+ロール別ベンチマーク比較 |
+| `vision_analysis.py` | ビジョン分析（ベンチマーク比較パートのみ） |
+| `_first_tower_benchmark.py` | ファーストタワー勝率のベンチマーク比較 |
+| `_bench_lane_early.py` | 序盤レーン GD のベンチマーク比較 |
+| `_jg_type_analysis.py` | JG タイプ別分析（ベンチマーク比較パートのみ） |
+
+> これらのスクリプトはベンチマークデータなしで実行するとエラーまたは比較パートがスキップされます。
+> ベンチマーク以外の分析機能は全てベンチマークデータなしで動作します。
+
 ---
 
 ## 分析 CLI コマンド一覧

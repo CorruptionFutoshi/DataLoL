@@ -22,7 +22,7 @@ D:\データLoL\
 │   └── analyze.py              # CLI analysis tool (10 commands)
 ├── docs/
 │   └── optimal_lane_algorithm.md  # Algorithm explainer (non-technical)
-├── scripts/                    # Standalone analysis scripts (27 files)
+├── scripts/                    # Standalone analysis scripts (36 files)
 │   ├── ban_analysis.py         # Enemy champion BAN priority ranking
 │   ├── analyze_teamfight.py    # Mid-game teamfight rally / KP analysis
 │   ├── lane_early_analysis.py  # Lane-by-lane early game vs win rate
@@ -47,9 +47,18 @@ D:\データLoL\
 │   ├── champion_benchmark.py   # Champion+role-specific comparison vs Emerald/Diamond
 │   ├── _solo_kill_analysis.py  # [utility] Solo kill (1v1) ranking
 │   ├── _win_loss_structure.py  # [utility] Win vs loss structural comparison
-│   ├── _top_jungle_proximity.py # [utility] Top-JG proximity analysis
+│   ├── _top_jungle_proximity.py # [utility] Top-JG proximity analysis (configurable target member)
 │   ├── _carry_weakside_analysis.py # [utility] Carry vs weak-side resource analysis
-│   └── _dramatic_games.py      # [utility] Drama score game finder
+│   ├── _dramatic_games.py      # [utility] Drama score game finder
+│   ├── _tilt_deep_analysis.py  # [utility] Tilt deep analysis with behind-rate weighting
+│   ├── _gold_share_winrate.py  # [utility] Gold share vs win rate analysis
+│   ├── _pick_priority.py       # [utility] Champion pick priority ranking by win rate
+│   ├── _first_tower_benchmark.py # [utility] First tower win rate vs Emerald benchmark
+│   ├── _bench_lane_early.py    # [utility] Benchmark lane-by-lane early gold diff analysis
+│   ├── _first_tower_winrate.py # [utility] First tower destroyed/lost win rate analysis
+│   ├── _jg_type_analysis.py    # [utility] JG champion type analysis (configurable target member)
+│   ├── _enemy_support_analysis.py # [utility] Enemy support matchup analysis (configurable target member)
+│   └── _matchup_analysis.py    # [utility] Lane matchup analysis (configurable target member)
 ├── data/
 │   ├── raw/matches/            # Raw match JSON files
 │   ├── raw/timelines/          # Raw timeline JSON files
@@ -196,6 +205,20 @@ When the user asks an analysis question:
 - "Rigorous mid lane stats?" / "ミッドの厳密な統計分析" → `python scripts/mid_lane_rigorous.py`
 - "Is the lane model reliable?" / "レーン配置モデルの信頼性は？" → `python scripts/lane_reliability_audit.py`
 - "Which lane bleeds most?" / "どのレーンが一番崩れやすい？" / "レーンの脆弱性は？" → `python scripts/lane_vulnerability.py`
+- "Solo kill ranking?" / "ソロキルランキングは？" / "1v1で強いのは？" → `python scripts/_solo_kill_analysis.py`
+- "Win vs loss structure?" / "勝ち試合と負け試合の違いは？" → `python scripts/_win_loss_structure.py`
+- "Top lane self-generated or JG-dependent?" / "トップは自力で勝ってる？JG依存？" → `python scripts/_top_jungle_proximity.py [MemberName]`
+- "Carry vs weak-side?" / "キャリーvsウィークサイドは？" → `python scripts/_carry_weakside_analysis.py`
+- "Most dramatic games?" / "劇的な試合は？" / "逆転試合は？" → `python scripts/_dramatic_games.py`
+- "Deep tilt analysis?" / "ティルト詳細分析は？" / "ビハインド時の崩れ方は？" → `python scripts/_tilt_deep_analysis.py`
+- "Gold share vs win rate?" / "ゴールド配分と勝率は？" → `python scripts/_gold_share_winrate.py`
+- "Champion pick priority?" / "チャンピオンのピック優先度は？" → `python scripts/_pick_priority.py`
+- "First tower win rate?" / "ファーストタワーの勝率は？" → `python scripts/_first_tower_winrate.py`
+- "First tower vs benchmark?" / "ファーストタワーをベンチマークと比較" → `python scripts/_first_tower_benchmark.py`
+- "Benchmark early lane analysis?" / "ベンチマーク序盤レーン比較" → `python scripts/_bench_lane_early.py`
+- "JG champion types?" / "JGのチャンピオンタイプは？" → `python scripts/_jg_type_analysis.py [MemberName]`
+- "Enemy support matchups?" / "敵サポートとの相性は？" → `python scripts/_enemy_support_analysis.py [MemberName]`
+- "Lane matchup analysis?" / "レーンのマッチアップ分析は？" → `python scripts/_matchup_analysis.py [MemberName]`
 
 ## For Deeper Custom Analysis
 

@@ -14,6 +14,7 @@ League of Legends のフレックスランクの試合データを **Riot Games 
 - [スタンドアロン分析スクリプト](#スタンドアロン分析スクリプト)
 - [Jupyter Notebook で分析する](#jupyter-notebook-で分析する)
 - [Cursor Agent に質問する](#cursor-agent-に質問する)
+- [Cursor 以外の環境で使う](#cursor-以外の環境で使う)
 - [フォルダ構成](#フォルダ構成)
 - [よくある質問](#よくある質問)
 
@@ -132,14 +133,53 @@ python src/analyze.py <コマンド>
 python scripts/<スクリプト名>.py
 ```
 
+### メイン分析スクリプト
+
 | スクリプト | 何がわかる |
 |---|---|
 | `ban_analysis.py` | 敵チャンピオンの BAN 優先度ランキング（勝率 60% + ピック率 40% のスコア）、ロール別脅威度 |
 | `analyze_teamfight.py` | 中盤 (14〜25分) の集団戦への寄り意識：KP%、集団戦関与率、KP と勝率の相関、マップポジション分析 |
 | `teamfight_analysis.py` | 集団戦イニシエート分析：先手を取った側の勝率、時間帯別傾向、メンバー別イニシエート回数 |
+| `last_teamfight_catch.py` | 負け試合の最後の集団戦で最初に捕まった人ランキング |
+| `midgame_catch_deaths.py` | 中盤（14分以降）の集団戦外キャッチデス：孤立死の頻度・マップゾーン・タイミング |
 | `lane_early_analysis.py` | レーン別序盤影響度：どのレーンが序盤に勝っているとチーム勝率に最も直結するか |
 | `grub_disaster.py` | ヴォイドグラブ周辺の大事故分析：味方 2 デス以上の試合を特定し、死亡者・グラブ獲得・勝率を分析 |
-| `benchmark_comparison.py` | 同ランク帯ベンチマーク比較：メンバー vs 同試合の非メンバー（対戦相手＋野良）でKDA・CS・ダメージ等をロール別に比較。パーセンタイル・偏差値・強み課題の自動判定付き。`--member X` で個人詳細 |
+| `optimal_lane_advanced.py` | 最適レーン配置分析：Ridge 回帰 + Bootstrap 95%CI + CV AUC + 外挿検知。`--bootstrap N` で回数調整。`docs/optimal_lane_algorithm.md` にアルゴリズム解説 |
+| `lane_composite_judgment.py` | レーン配置 複合判断：5つのシグナル（回帰効果・チーム勝率・序盤力・適性・実測パターン）の合意度で評価 |
+| `lane_reliability_audit.py` | レーン配置モデルの信頼性監査：順列検定・要因比較・時系列安定性・検出力分析 |
+| `lane_vulnerability.py` | レーン脆弱性分析：出血率（GD推移）・崩壊頻度・回復力・安定度スコア。JG介入要否の判断材料 |
+| `player_type_analysis.py` | プレイヤータイプ分類：KDA/ダメージ/ビジョン/ファームからキャリー・タンク・ユーティリティ等を判定 |
+| `member_role_winrate.py` | メンバー×ロール勝率マトリクス + OLS回帰による玉突き効果の分離 |
+| `mental_tilt_ranking.py` | メンタル耐性ランキング：10分時点ビハインド(-300G+)時のパフォーマンス低下をロール補正して測定 |
+| `vision_analysis.py` | ビジョン総合分析：ワード設置/除去・視界スコア↔勝率相関・エメラルド帯ベンチマーク比較 |
+| `comp_analysis.py` | 構成タイプ別勝率分析：ポーク/エンゲージ/カウンターエンゲージの分類・マッチアップ・チャンプ分布 |
+| `carry_count_winrate.py` | ダメージキャリー人数 vs 勝率：最適なキャリー人数、メンバー別のキャリー/非キャリー適性 |
+| `mid_champion_deep.py` | ミッドレーンチャンピオン別詳細：対面比較(Welch t + Cohen's d)・GD推移・Holm補正 |
+| `mid_lane_rigorous.py` | ミッドレーン厳密統計分析：全結論に検定・効果量・信頼区間付き |
+| `splitpush_v4.py` | スプリットプッシュ分析 v4：エピソード検出(depth≥0.60, 味方不在, 25分+)→タワー/キル/デス/安全撤退の結果追跡 |
+| `benchmark_comparison.py` | エメラルド帯ベンチマーク比較：チーム全体・ロール別・パーセンタイル・強み弱み自動判定。`--member X` で個人詳細 |
+| `champion_benchmark.py` | チャンピオン+ロール別ベンチマーク：同チャンプ同ロール比較でチャンピオンバイアスを排除。`--member X` で個人詳細 |
+
+### ユーティリティスクリプト（`_` プレフィクス）
+
+特定のテーマを掘り下げるユーティリティです。一部は引数でメンバーを指定できます。
+
+| スクリプト | 何がわかる | 引数 |
+|---|---|---|
+| `_solo_kill_analysis.py` | ソロキル(1v1)ランキング・チャンピオン別ソロキル/デス | `[メンバー名]` |
+| `_win_loss_structure.py` | 勝ち試合 vs 負け試合の構造的差異 | なし |
+| `_top_jungle_proximity.py` | トップレーンの優位は自力 or JG依存？ キルイベント・GD・CS差で検証 | `[メンバー名]` |
+| `_carry_weakside_analysis.py` | キャリー側 vs ウィークサイドのリソース配分と勝率 | なし |
+| `_dramatic_games.py` | 逆転度・接戦度のドラマスコアで印象的な試合を検索 | なし |
+| `_tilt_deep_analysis.py` | ティルト詳細分析 + 序盤ビハインド率で真のティルト王を判定 | なし |
+| `_gold_share_winrate.py` | ゴールド配分率と勝率の関係 | なし |
+| `_pick_priority.py` | チャンピオンのピック優先度ランキング（勝率順） | なし |
+| `_first_tower_winrate.py` | 最初に破壊/喪失したタワー別の勝率 | なし |
+| `_first_tower_benchmark.py` | ファーストタワー勝率のエメラルド帯ベンチマーク比較 | なし |
+| `_bench_lane_early.py` | ベンチマーク(エメラルド帯)のレーン別序盤GD vs 勝率分析 | なし |
+| `_jg_type_analysis.py` | JGチャンピオンのタイプ別(ファイター/タンク/アサシン等)勝率分析 | `[メンバー名]` |
+| `_enemy_support_analysis.py` | 敵サポートチャンピオン別の勝率・相性 | `[メンバー名]` |
+| `_matchup_analysis.py` | 対面チャンピオン別のマッチアップ勝率 | `[メンバー名]` |
 
 ---
 
@@ -188,6 +228,73 @@ Cursor の Agent モードで自然に質問するだけで分析が実行され
 | 「何を BAN すべき？」 | `scripts/ban_analysis.py` を実行して解説 |
 | 「中盤の寄りの意識は？」 | `scripts/analyze_teamfight.py` を実行して解説 |
 | 「グラブで事故ってない？」 | `scripts/grub_disaster.py` を実行して解説 |
+| 「誰が一番メンタル弱い？」 | `scripts/mental_tilt_ranking.py` を実行して解説 |
+| 「ビジョン・ワードの分析は？」 | `scripts/vision_analysis.py` を実行して解説 |
+| 「構成の勝率は？」 | `scripts/comp_analysis.py` を実行して解説 |
+| 「最適なレーン配置は？」 | `optimal_lane_advanced.py` + `lane_composite_judgment.py` の両方を実行 |
+| 「同ランク帯と比べてどう？」 | `scripts/benchmark_comparison.py` を実行して解説 |
+| 「スプリットプッシュの結果は？」 | `scripts/splitpush_v4.py` を実行して解説 |
+| 「集団戦で先に捕まるのは？」 | `scripts/last_teamfight_catch.py` を実行して解説 |
+| 「ソロキルが多いのは誰？」 | `scripts/_solo_kill_analysis.py` を実行して解説 |
+| 「一番接戦だった試合は？」 | `scripts/_dramatic_games.py` を実行して解説 |
+
+---
+
+## Cursor 以外の環境で使う
+
+このプロジェクトは Cursor IDE 向けに Agent Skill（`.cursor/skills/`）を同梱していますが、
+コア機能は **標準的な Python スクリプト** なので、どの環境でも利用できます。
+
+### 共通の前提
+
+どの環境でも以下は同じです:
+
+1. Python 3.10+ と `pip install -r requirements.txt` で依存パッケージをインストール
+2. `config/settings.yaml.example` を `config/settings.yaml` にコピーし、API キーとメンバーを設定
+3. `python src/collect.py` → `python src/process.py` でデータ収集・CSV 生成
+4. `python scripts/<スクリプト名>.py` で分析実行
+
+### ChatGPT Codex
+
+Codex はリポジトリをクローンしてサンドボックス内で作業します。
+
+- **Agent Skill は読み込まれません**: `.cursor/skills/` は Cursor 固有の仕組みです。代わりに `README.md` と `AGENTS.md`（あれば）がコンテキストとして利用されます
+- **設定ファイル**: Codex のサンドボックスでは `config/settings.yaml` が `.gitignore` 済みで存在しないため、セットアップタスクとして「`settings.yaml.example` を `settings.yaml` にコピーして API キーを設定して」と指示してください
+- **データ収集**: Riot API キーが必要です。Codex にキーを渡してデータ収集から実行するか、事前にローカルで収集した `data/processed/*.csv` をリポジトリに含める（`.gitignore` から除外する）方法があります
+- **分析の実行**: CSV が存在すれば `python scripts/ban_analysis.py` 等はそのまま動きます。「○○を分析して」と聞けば、スクリプト一覧（この README の表）を参照して適切なスクリプトを実行してくれます
+
+### GitHub Copilot (VS Code)
+
+- Agent Skill は読まれません。代わりにリポジトリ内の `README.md` とコードが参照されます
+- VS Code のターミナルからスクリプトを手動実行する使い方が中心です
+- Copilot Chat に「この README を読んで、○○を分析して」と依頼すれば、適切なコマンドを提案してくれます
+
+### Windsurf / Cline / その他の AI IDE
+
+- 各ツール固有のルールファイル（`rules/` や `.windsurfrules` 等）はありません
+- `README.md` のスクリプト一覧と Question → Command マッピングが唯一のガイドです
+- 必要に応じて `.cursor/skills/lol-flex-analysis/SKILL.md` の内容をそのツール向けのルールファイルに転記してください
+
+### 手動（AI なし）
+
+AI を使わず手動で分析する場合:
+
+```bash
+# 1. データ更新
+python src/collect.py
+python src/process.py
+
+# 2. 全体成績を確認
+python src/analyze.py overview
+
+# 3. 深掘り分析
+python scripts/ban_analysis.py
+python scripts/benchmark_comparison.py --member メンバー名
+python scripts/mental_tilt_ranking.py
+# ... 他のスクリプトも同様
+```
+
+各スクリプトは標準出力にテキストで結果を表示します。特別な UI や Web サーバーは不要です。
 
 ---
 
@@ -206,12 +313,43 @@ D:\データLoL\
 │   ├── process.py                 JSON → CSV 変換（5 種類の CSV を生成）
 │   └── analyze.py                 分析 CLI ツール（10 コマンド）
 │
-├── scripts/                        スタンドアロン分析スクリプト
+├── scripts/                        スタンドアロン分析スクリプト（36 ファイル）
 │   ├── ban_analysis.py            敵チャンピオン BAN 優先度
 │   ├── analyze_teamfight.py       中盤の集団戦への寄り分析
 │   ├── teamfight_analysis.py      集団戦イニシエート分析
+│   ├── last_teamfight_catch.py    負け試合のラスト集団戦捕まり分析
+│   ├── midgame_catch_deaths.py    中盤キャッチデス分析
 │   ├── lane_early_analysis.py     レーン別序盤影響度分析
-│   └── grub_disaster.py           ヴォイドグラブ大事故分析
+│   ├── grub_disaster.py           ヴォイドグラブ大事故分析
+│   ├── optimal_lane_advanced.py   最適レーン配置（Ridge回帰+Bootstrap）
+│   ├── lane_composite_judgment.py レーン配置複合判断（5シグナル合意）
+│   ├── lane_reliability_audit.py  レーン配置モデル信頼性監査
+│   ├── lane_vulnerability.py      レーン脆弱性分析
+│   ├── player_type_analysis.py    プレイヤータイプ分類
+│   ├── member_role_winrate.py     メンバー×ロール勝率+玉突き分析
+│   ├── mental_tilt_ranking.py     メンタル耐性ランキング
+│   ├── vision_analysis.py         ビジョン総合分析+ベンチマーク比較
+│   ├── comp_analysis.py           構成タイプ別勝率
+│   ├── carry_count_winrate.py     キャリー人数 vs 勝率
+│   ├── mid_champion_deep.py       ミッドチャンピオン別詳細
+│   ├── mid_lane_rigorous.py       ミッドレーン厳密統計
+│   ├── splitpush_v4.py            スプリットプッシュ分析
+│   ├── benchmark_comparison.py    エメラルド帯ベンチマーク比較
+│   ├── champion_benchmark.py      チャンピオン別ベンチマーク比較
+│   ├── _solo_kill_analysis.py     [utility] ソロキルランキング
+│   ├── _win_loss_structure.py     [utility] 勝ち/負け構造比較
+│   ├── _top_jungle_proximity.py   [utility] トップ-JG近接度分析
+│   ├── _carry_weakside_analysis.py [utility] キャリー/ウィークサイド分析
+│   ├── _dramatic_games.py         [utility] ドラマスコア試合検索
+│   ├── _tilt_deep_analysis.py     [utility] ティルト詳細分析
+│   ├── _gold_share_winrate.py     [utility] ゴールド配分率 vs 勝率
+│   ├── _pick_priority.py          [utility] ピック優先度ランキング
+│   ├── _first_tower_winrate.py    [utility] ファーストタワー勝率
+│   ├── _first_tower_benchmark.py  [utility] ファーストタワーBM比較
+│   ├── _bench_lane_early.py       [utility] BM序盤レーン比較
+│   ├── _jg_type_analysis.py       [utility] JGタイプ別分析
+│   ├── _enemy_support_analysis.py [utility] 敵サポート相性
+│   └── _matchup_analysis.py       [utility] 対面マッチアップ分析
 │
 ├── data/
 │   ├── raw/
@@ -227,7 +365,7 @@ D:\データLoL\
 │
 ├── notebooks/                     Jupyter 分析ノートブック（01〜07）
 │
-├── .cursor/skills/                Cursor Agent 用スキル定義
+├── .cursor/skills/                Cursor Agent 用スキル定義（他環境では不使用）
 │
 ├── requirements.txt               Python パッケージ一覧
 └── README.md                      このファイル
